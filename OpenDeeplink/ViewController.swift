@@ -7,15 +7,32 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-
+class ViewController: UIViewController, UITextFieldDelegate {
+  
+  @IBOutlet weak var mobileNumberTextfield: UITextField!
+  
   override func viewDidLoad() {
     super.viewDidLoad()
-    // Do any additional setup after loading the view.
+    
+    mobileNumberTextfield.smartInsertDeleteType = UITextSmartInsertDeleteType.no
+    mobileNumberTextfield.delegate = self
   }
-
+  
+  func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    guard let textFieldText = textField.text,
+          let rangeOfTextToReplace = Range(range, in: textFieldText) else {
+      return false
+    }
+    let substringToReplace = textFieldText[rangeOfTextToReplace]
+    let count = textFieldText.count - substringToReplace.count + string.count
+    return count <= 10
+  }
+  
   @IBAction func didTapOpenApp(_ sender: Any) {
-    let mobileNumber = "0846936500"
+    var mobileNumber = "0980000002"
+    if let number = mobileNumberTextfield.text {
+      mobileNumber = number
+    }
     let clientId = "4102000587456315"
     let scope = "profile"
     let redirectUri = "https://redirect_uri"
@@ -23,11 +40,11 @@ class ViewController: UIViewController {
     let responseType = "code"
     
     let url = URL(string: "myais://MyIds?mobileNumber=\(mobileNumber)&clientId=\(clientId)&scope=\(scope)&redirectUri=\(redirectUri)&state=\(state)&responseType=\(responseType)")
-           
+    
     UIApplication.shared.open(url!) { (result) in
-        if result {
-
-        }
+      if result {
+        
+      }
     }
   }
   
