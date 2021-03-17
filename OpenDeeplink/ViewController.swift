@@ -10,12 +10,17 @@ import UIKit
 class ViewController: UIViewController, UITextFieldDelegate {
   
   @IBOutlet weak var mobileNumberTextfield: UITextField!
+  @IBOutlet weak var defaultMobileNumberLabel: UILabel!
+  var realMobileNumber = "0912345626"
+  var mockMobileNumber = "0980000001"
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
     mobileNumberTextfield.smartInsertDeleteType = UITextSmartInsertDeleteType.no
     mobileNumberTextfield.delegate = self
+    defaultMobileNumberLabel.text = "Real api: default mobile = \(realMobileNumber)"
+    //defaultMobileNumberLabel.text = "Mock api: default mobile\(mockMobileNumber)"
   }
   
   func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -29,22 +34,69 @@ class ViewController: UIViewController, UITextFieldDelegate {
   }
   
   @IBAction func didTapOpenApp(_ sender: Any) {
-    var mobileNumber = "0980000001"
+    deeplinkOpenApp()
+  }
+  
+  func getAppRealUrl() -> URL {
+    let clientId = "4102000587456317"
+    let scope = "profile"
+    let uri = "https://{rp_server}/2002"
+    let state = "12356700000000456178215ANM785190"
+    let responseType = "code"
     if let number = mobileNumberTextfield.text, number != "" {
-      mobileNumber = number
+      realMobileNumber = number
     }
+    let scheme = "myais"
+    let host = "MyIds"
+    let path = ""
+    var urlComponents = URLComponents()
+    urlComponents.scheme = scheme
+    urlComponents.host = host
+    urlComponents.path = path
+    urlComponents.queryItems = [
+      URLQueryItem(name: "mobileNumber", value: realMobileNumber),
+      URLQueryItem(name: "clientId", value: clientId),
+      URLQueryItem(name: "scope", value: scope),
+      URLQueryItem(name: "redirectUri", value: uri),
+      URLQueryItem(name: "state", value: state),
+      URLQueryItem(name: "responseType", value: responseType)
+    ]
+
+    return urlComponents.url!
+  }
+  
+  func getAppMockUrl() -> URL {
     let clientId = "4102000587456315"
     let scope = "profile"
+    let uri = "https://redirect_uri"
     let state = "12356700000000456178215ANM785185"
     let responseType = "code"
-    
-    let url = URL(string: "myais://MyIds?mobileNumber=\(mobileNumber)&clientId=\(clientId)&scope=\(scope)&redirectUri=https://redirect_uri&state=\(state)&responseType=\(responseType)")
-    
-    UIApplication.shared.open(url!) { (result) in
-      if result {
-        
-      }
+    if let number = mobileNumberTextfield.text, number != "" {
+      mockMobileNumber = number
     }
+    let scheme = "myais"
+    let host = "MyIds"
+    let path = ""
+    var urlComponents = URLComponents()
+    urlComponents.scheme = scheme
+    urlComponents.host = host
+    urlComponents.path = path
+    urlComponents.queryItems = [
+      URLQueryItem(name: "mobileNumber", value: realMobileNumber),
+      URLQueryItem(name: "clientId", value: clientId),
+      URLQueryItem(name: "scope", value: scope),
+      URLQueryItem(name: "redirectUri", value: uri),
+      URLQueryItem(name: "state", value: state),
+      URLQueryItem(name: "responseType", value: responseType)
+    ]
+
+    return urlComponents.url!
+  }
+  
+  func deeplinkOpenApp() {
+    //let url = getAppMockUrl()
+    let url = getAppRealUrl()
+    UIApplication.shared.open(url)
   }
   
 }
