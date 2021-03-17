@@ -29,17 +29,16 @@ class ViewController: UIViewController, UITextFieldDelegate {
   }
   
   @IBAction func didTapOpenApp(_ sender: Any) {
-    var mobileNumber = "0980000002"
-    if let number = mobileNumberTextfield.text {
+    var mobileNumber = "0980000001"
+    if let number = mobileNumberTextfield.text, number != "" {
       mobileNumber = number
     }
     let clientId = "4102000587456315"
     let scope = "profile"
-    let redirectUri = "https://redirect_uri"
     let state = "12356700000000456178215ANM785185"
     let responseType = "code"
     
-    let url = URL(string: "myais://MyIds?mobileNumber=\(mobileNumber)&clientId=\(clientId)&scope=\(scope)&redirectUri=\(redirectUri)&state=\(state)&responseType=\(responseType)")
+    let url = URL(string: "myais://MyIds?mobileNumber=\(mobileNumber)&clientId=\(clientId)&scope=\(scope)&redirectUri=https://redirect_uri&state=\(state)&responseType=\(responseType)")
     
     UIApplication.shared.open(url!) { (result) in
       if result {
